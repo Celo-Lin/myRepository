@@ -1,0 +1,376 @@
+syntax = "proto3";
+
+option java_package = "com.juan.adx.model.dsp.wifi";  // 生成的java文件的包名
+option java_outer_classname = "WifiDspProtobuf";
+
+message FlyingShuttleBidRequest {
+  // ⻜梭联盟后台⽣成
+  string token = 1;
+  // 每次请求⽣成的唯⼀ID，建议⻓度32位
+  string request_id = 2;
+  // 发起⼴告请求时的时间戳，毫秒
+  uint64 timestamp = 3;
+  // ⽤户信息
+  User user = 4;
+  // ⼴告位信息
+  Slot slot = 5;
+  // 请求的设备信息
+  Device device = 6;
+  // 请求的APP信息
+  SourceApp app = 7;
+  // 设备⽹络信息
+  Network network = 8;
+  // 地理位置信息
+  Geo geo = 9;
+}
+message FlyingShuttleBidResponse {
+  // 对应请求的request_id，⽤于和请求关联
+  string request_id = 1;
+  // 返回⼴告时的时间戳，毫秒
+  uint64 timestamp = 2;
+  // 状态码，0-成功，⾮0-失败
+  uint32 code = 3;
+  // ⼴告集合
+  repeated Ad ads = 4;
+}
+message Slot {
+  // ⼴告位ID
+  string id = 1;
+  // ⼴告位类型
+  SlotType type = 2;
+  // 需要的⼴告个数
+  uint32 ad_count = 3;
+  // ⼴告位⽀持的物料类型，不填代表⽀持所有物料类型
+  repeated MaterialType material_types = 4;
+  // ⼴告位⽀持的⼴告类型，不填代表⽀持所有⼴告类型
+  repeated AdType ad_types = 5;
+  // 底价CPM值，单位：分
+  uint32 floor_cpm = 6;
+}
+enum SlotType {
+  // 未定义
+  SLOT_TYPE_UNSPECIFIED = 0;
+  // 信息流
+  SLOT_TYPE_NATIVE = 1;
+  // 开屏
+  SLOT_TYPE_SPLASH = 2;
+  // 插屏
+  SLOT_TYPE_INTERSTITIAL = 3;
+  // 激励视频
+  SLOT_TYPE_REWARD_VIDEO = 5;
+}
+enum MaterialType {
+  // 未定义
+  MATERIAL_TYPE_UNSPECIFIED = 0;
+  // 横版图⽚
+  MATERIAL_TYPE_HORIZONTAL_PIC = 1;
+  // 竖版图⽚
+  MATERIAL_TYPE_VERTICAL_PIC = 2;
+  // 横版视频
+  MATERIAL_TYPE_HORIZONTAL_VIDEO = 3;
+  // 竖版视频
+  MATERIAL_TYPE_VERTICAL_VIDEO = 4;
+  // 多图
+  MATERIAL_TYPE_MULTI_PICS = 5;
+}
+message Device {
+  // 设备类型
+  DeviceType type = 1;
+  // 操作系统类型
+  OS os = 2;
+  // 操作系统版本
+  string os_version = 3;
+  // 安卓系统API版本
+  uint32 api_level = 4;
+  // 设备⼚商
+  string vendor = 5;
+  // 设备型号
+  string model = 6;
+  // Webview的UA
+  string user_agent = 7;
+  // 设备ID集合
+  DeviceID device_id = 8;
+  // 屏幕宽度
+  uint32 screen_width = 9;
+  // 屏幕⾼度
+  uint32 screen_height = 10;
+  // 屏幕DPI
+  uint32 screen_dpi = 11;
+  // 屏幕PPI
+  float screen_ppi = 12;
+  // 系统启动标识
+  string boot_mark = 13;
+  // 系统更新标识
+  string update_mark = 14;
+  // 开机时间
+  string boot_time = 15;
+  // 系统更新时间
+  string sys_update_time = 16;
+  // 华为HMS Core版本号
+  string hw_hms_ver_code = 17;
+  // 华为应⽤市场版本号
+  string hw_ag_ver_code = 18;
+}
+enum DeviceType {
+  // 未定义
+  DEVICE_TYPE_UNSPECIFIED = 0;
+  // ⼿机
+  DEVICE_TYPE_PHONE = 1;
+  // 平板
+  DEVICE_TYPE_TABLET = 2;
+  // 电视
+  DEVICE_TYPE_TV = 3;
+  // 电脑
+  DEVICE_TYPE_PC = 4;
+}
+enum OS {
+  // 未定义
+  OS_UNSPECIFIED = 0;
+  // 安卓
+  OS_ANDROID = 1;
+  // iOS
+  OS_IOS = 2;
+}
+message DeviceID {
+  string imei = 1;
+  string mac = 2;
+  string android_id = 3;
+  string oaid = 4;
+  string idfa = 5;
+}
+message SourceApp {
+  // APP ID，⻜梭联盟商务提供
+  string id = 1;
+  // APP名称
+  string name = 2;
+  // APP版本号，如：221010
+  uint32 version = 3;
+  // APP版本名称，如：1.0.0
+  string version_name = 4;
+  // APP所属应⽤市场名称
+  string market = 5;
+  // APP包名
+  string pkg_name = 6;
+}
+message Network {
+  // ⽹络类型
+  NetType type = 1;
+  // 运营商
+  Carrier carrier = 2;
+  // APP的IP地址，服务端对接要填写
+  string ipv4 = 3;
+}
+enum NetType {
+  // 未定义
+  NET_TYPE_UNSPECIFIED = 0;
+  // 有线⽹络
+  NET_TYPE_ETHERNET = 1;
+  // WiFi⽹络
+  NET_TYPE_WIFI = 2;
+  // 蜂窝⽹络（未识别出的G⽹）
+  NET_TYPE_CELLULAR_UNKNOWN = 3;
+  // 2G蜂窝⽹络
+  NET_TYPE_CELLULAR_2G = 4;
+  // 3G蜂窝⽹络
+  NET_TYPE_CELLULAR_3G = 5;
+  // 4G蜂窝⽹络
+  NET_TYPE_CELLULAR_4G = 6;
+  // 5G蜂窝⽹络
+  NET_TYPE_CELLULAR_5G = 7;
+}
+enum Carrier {
+  // 未定义
+  CARRIER_UNSPECIFIED = 0;
+  // 中国移动
+  CARRIER_MOBILE = 1;
+  // 中国电信
+  CARRIER_TELECOM = 2;
+  // 中国联通
+  CARRIER_UNICOM = 3;
+}
+message Geo {
+  // 经度
+  double longitude = 1;
+  // 纬度
+  double latitude = 2;
+}
+message User {
+  // 性别
+  Gender gender = 1;
+  // 年龄
+  uint32 age = 2;
+  // 已安装APP列表
+  repeated uint32 installed_apps = 3;
+}
+enum Gender {
+  // 未定义
+  GENDER_UNSPECIFIED = 0;
+  // 男
+  GENDER_MALE = 1;
+  // ⼥
+  GENDER_FEMALE = 2;
+}
+message Ad {
+  // 物料信息
+  Material material = 1;
+  // 物料类型
+  MaterialType material_type = 2;
+  // ⼴告类型
+  AdType ad_type = 3;
+  // ⼴告监测链接
+  TrackingUrl tracking_urls = 4;
+  // 监测链接中的加密数据
+  string tracking_data = 5;
+  // 出价，CPM单位是分
+  uint32 cpm = 6;
+  // ⼴告唯⼀ID
+  string sid = 7;
+}
+enum AdType {
+  // 未定义
+  AD_TYPE_UNSPECIFIED = 0;
+  // 落地⻚⼴告
+  AD_TYPE_REDIRECT = 1;
+  // APP直接下载⼴告
+  AD_TYPE_DOWNLOAD = 2;
+  // APP唤起⼴告
+  AD_TYPE_DEEPLINK = 3;
+  // ⼩程序唤起⼴告
+  AD_TYPE_MINI_APP = 4;
+  // 跳应⽤市场下载APP⼴告
+  AD_TYPE_MARKET = 5;
+}
+message Material {
+  // 落地⻚地址
+  string landing_url = 1;
+  // 下载地址
+  string download_url = 2;
+  // Deeplink地址
+  string deeplink_url = 3;
+  // 跳应⽤市场地址
+  string market_url = 4;
+  // 标题
+  string title = 5;
+  // 描述信息
+  string desc = 6;
+  // ⼴告图⽚
+  repeated Image images = 7;
+  // ⼴告主推⼴的⽬标APP信息
+  TargetApp app = 8;
+  // 视频信息
+  Video video = 9;
+  // 微信⼩程序
+  WechatMiniApp wechat_mini_app = 10;
+}
+message Image {
+  // 图⽚URL
+  string url = 1;
+  // 图⽚宽度
+  uint32 width = 2;
+  // 图⽚⾼度
+  uint32 height = 3;
+  // 图⽚⽂件的MD5
+  string md5 = 4;
+}
+message Video {
+  // 视频URL
+  string url = 1;
+  // 视频时⻓
+  uint32 duration = 2;
+  // 视频⼤⼩，单位Byte
+  uint32 size = 3;
+  // 视频尺⼨宽度
+  uint32 width = 4;
+  // 视频尺⼨⾼度
+  uint32 height = 5;
+}
+message TargetApp {
+  // APP ID
+  string id = 1;
+  // APP名称
+  string name = 2;
+  // APP版本号，如：221010
+  uint32 version = 3;
+  // APP版本名称，如：1.0.0
+  string version_name = 4;
+  // APP所属渠道名
+  string market = 5;
+  // APP包名
+  string pkg_name = 6;
+  // APP图标URL
+  string icon = 7;
+  // APP包体⼤⼩，单位：Byte
+  uint32 size = 8;
+  // APP包的md5值
+  string md5 = 9;
+  // APP开发者
+  string developer = 10;
+  // 隐私协议URL
+  string privacy = 11;
+  // 权限列表URL
+  string permission_url = 12;
+  // 权限列表
+  repeated Permission permissions = 13;
+  // APP产品介绍URL
+  string introduction_url = 14;
+}
+message Permission {
+  // 权限名称
+  string name = 1;
+  // 权限描述
+  string desc = 2;
+}
+message WechatMiniApp {
+  // ⼩程序ID
+  string id = 1;
+  // ⼩程序对应⻚⾯路径
+  string path = 2;
+}
+message TrackingUrl {
+  // 召回事件
+  repeated string recall_urls = 1;
+  // 胜出事件
+  repeated string win_urls = 2;
+  // 竞败事件
+  repeated string lose_urls = 3;
+  // 曝光事件
+  repeated string imp_urls = 4;
+  // 点击事件
+  repeated string click_urls = 5;
+  // 开始下载事件
+  repeated string download_start_urls = 6;
+  // 下载完成事件
+  repeated string download_end_urls = 7;
+  // 安装完成事件
+  repeated string install_end_urls = 8;
+  // deeplink点击事件
+  repeated string deeplink_click_urls = 9;
+  // deeplink包名唤起事件
+  repeated string deeplink_awoke_urls = 10;
+  // app已安装事件
+  repeated string app_installed_urls = 11;
+  // deeplink跳转后第5s检查媒体APP在后台
+  repeated string deeplink_5s_urls = 12;
+  // deeplink错误等原因导致跳转失败
+  repeated string deeplink_error_urls = 13;
+  // deeplink拉起应⽤市场
+  repeated string deeplink_market_urls = 14;
+  // 视频开始播放
+  repeated string video_start_urls = 15;
+  // 视频播放完成
+  repeated string video_end_urls = 16;
+  // 视频暂停播放
+  repeated string video_pause_urls = 17;
+  // 视频播放错误
+  repeated string video_error_urls = 18;
+  // 视频播放进度-百分⽐
+  repeated VideoProgressTracking video_process_percent_urls = 19;
+  // 视频播放进度-时⻓
+  repeated VideoProgressTracking video_process_duration_urls = 20;
+}
+message VideoProgressTracking {
+  // 如果是百分⽐，该值为百分⽐乘以10000的值；⽐如：播放50%上报，该值就是0.5 * 10000 =5000。
+  // 如果是时⻓绝对值，该值为秒数。
+  int32 process = 1;
+  repeated string urls = 2;
+}

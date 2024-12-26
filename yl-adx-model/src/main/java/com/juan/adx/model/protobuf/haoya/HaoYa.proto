@@ -1,0 +1,241 @@
+syntax = "proto3";
+
+option java_generic_services = true;
+
+package com.juan.adx.model.dsp.haoya;
+
+//生成 proto 文件名
+option java_outer_classname="HaoYaProtobuf";
+
+message AdRequest {
+  string reqid = 1;               // 必填，自定义广告请求id，开发者自行生成
+  string apiVersion = 2;          // 必填，adx 的 api 版本号，当前为固定值"1.0"
+  repeated AdSlot adSlotList = 3; // 必填，广告位信息
+  message AdSlot {
+    string id = 1;                  // 必填，2345ADX 广告平台的广告位 ID，与 2345ADX 商务沟通
+    string impNum = 2;              // 必填，广告位序号，从"1"开始递增
+    string impId = 3;               // 必填，媒体侧自定义的提供的广告曝光唯一 ID
+    int32 type = 4;                 // 必填，广告位类型，1：开屏，2：插屏，3：信息流
+    repeated Template template = 5; // 必填，支持的广告样式
+    message Template {
+      int32 id = 1;     // 必填，广告样式 ID，1：竖版视频，2：横版视频，3：竖版大图文，4：横版大图文，5：小图文，6：组图文，7：纯文本
+      int32 width = 2;  // 素材宽度
+      int32 height = 3; // 素材高度
+    }
+    int32 floorPrice = 6;           // 广告位底价，单位：分/cpm
+    int32 billType = 7;             // 交易类型，0：CPM
+    int32 bidType = 8;              // 采买类型，0：RTB，1：PD
+    int32 width = 9;                // 广告位宽度，单位：像素
+    int32 height = 10;              // 广告位高度，单位：像素
+    string dealId = 11;             // PDB、PD 交易订单号
+    repeated int32 actionType = 12; // 点击广告后的交互类型，0：全部，1：H5，2：下载，3：唤醒，4：微信小程序
+  }
+  string appList = 4; // 应用列表，用半角逗号分隔
+  App app = 5;        // App 信息，移动端应用必填
+  message App {
+    string appId = 2;             // 必填，媒体方 APP 的 ID
+    string name = 3;              // 必填，媒体方 APP 的名称
+    string packageName = 4;       // 必填，应用包名
+    string version = 5;           // 应用版本，例如："1.0.0"
+    repeated string category = 6; // 所属行业
+    string mkt = 7;               // 应用商店
+    string mktSn = 8;             // APP 在商店的编号
+    string mktCat = 9;            // APP 在商店的分类
+    string mktTag = 10;            // APP 在商店的标签
+    string keywords = 11;         // 关键词，例如："游戏"
+  }
+  Site site = 6; //
+  message Site {
+    string id = 1;       //
+    string siteId = 2;   //
+    string name = 3;     //
+    string domain = 4;   //
+    string url = 5;      //
+    string refer = 6;    //
+    string keywords = 7; //
+  }
+  Device device = 7; // 必填，设备信息
+  message Device {
+    string ua = 1;          // 推荐填，浏览器的 user agent
+    int32 type = 2;         // 推荐填，设备类型，0：PC，1：手机，2：平板，3：互联网电视
+    string brand = 3;       // 设备品牌，例如：apple
+    string model = 4;       // 设备型号，如：iphone
+    string make = 5;        // 设备制造商
+    string hmsVersion = 6;  // 华为机型 HMS Core 版本号，如：60000306
+    string asVersion = 7;   // 大陆厂商安卓设备应用商店版本号，例如：110302302
+    int32 os = 8;           // 操作系统，0：windows，1：macOS，2：Linux，3：iOS，4：Android
+    string osVersion = 9;   // 操作系统版本号
+    int32 density = 10;     // 屏幕密度，默认 400
+    int32 width = 11;       // 屏幕宽度，单位：像素
+    int32 height = 12;      // 屏幕高度，单位：像素
+    int32 carrier = 13;     // 运营商，0：电信，1：移动，2：联通，3：网通，4：未知
+    int32 network = 14;     // 网络类型，0：WIFI，1：有线网络，2：2G，3：3G，4：4G，5：5G，6：未知
+    int32 orientation = 15; // 推荐填，屏幕方向，0：未知，1：竖屏，2：横屏
+    string ip = 16;         // ipv4
+    string ipv6 = 17;       // ipv6
+    string imei = 18;       // 设备号 imei
+    string imeiMD5 = 19;    // 设备号 imei 的 MD5
+    string oaid = 20;       // 推荐填，Android Q 以上版本的设备号，明文形式
+    string oaidMD5 = 21;    // oaid 的 MD5
+    string dpid = 22;       // 推荐填，设备的 Android ID
+    string dpidMD5 = 23;    // 设备的 Android ID 对应 MD5
+    string mac = 24;        // 设备 mac 地址
+    string macMD5 = 25;     // 设备 mac 地址的 MD5
+    string idfa = 26;       // iOS 设备号 idfa
+    string idfaMD5 = 27;    // iOS 设备号 idfa 的 MD5
+    string idfv = 28;       // iOS 设备号 idfv
+    string bootMark = 29;   // 取原值进⾏传输，例如：iOS：1623815045.970028 Android：ec7f4f33-411a-47bc-8067-744a4e7e0723
+    string updateMark = 30; // 取原值进⾏传输，例如：iOS：1581141691.570419583 Android：1004697.709999999
+    string birthTime = 31;  // iOS 设备初始化时间
+    string bootTime = 32;   // iOS 系统启动时间
+    string updateTime = 33; // iOS 系统更新时间
+    string language = 34;   // 系统语言
+    Geo geo = 35;           // 地域信息
+    message Geo {
+      double lat = 1;      // 纬度 (-90.0 至 90.0), 负值代表南
+      double lon = 2;      // 经度 (-180.0 至 180.0), 负值代表西
+      string country = 3;  // 国家，中文
+      string province = 4; // 省份，中文
+      string city = 5;     // 城市，中文
+    }
+    Caid caid = 36; // 中广协，仅 iOS
+    message Caid {
+      string id = 1;            // caid 原值
+      string bootTimeInSec = 2; // 设备启动时间
+      string countryCode = 3;   // 国家
+      string language = 4;      // 语言
+      string deviceName = 5;    // 设备名称
+      string model = 6;         // 设备型号
+      string systemVersion = 7; // 系统版本
+      string machine = 8;       // 设备 machine
+      string carrierInfo = 9;   // 运营商
+      string memory = 10;       // 物理内存
+      string disk = 11;         // 磁盘大小
+      string sysFileTime = 12;  //
+      string timeZone = 13;     // 时区
+      string initTime = 14;     // 设备初始化时间
+      string version = 15;      // caid 原值版本号
+    }
+    int32 ppi = 37; //像素密度，表示每英寸像素点
+    float pxRatio = 38; //屏幕密度
+    string paid = 39; //拼多多版caid，仅iOS
+    string aaid = 40; //阿里集团内推出的匿名广告标识符，格式示例：CD7D878A870C-97D4-89A4-3EB3-D48AF066
+    string elapseTime = 41; //开机时长
+    int32 sysCpuNum = 42; //设备cpu数量
+    int32 batteryState = 43; //设备当前充电状态 1:未知状态，2:正在充电，3 放电 4:未充满，5:满状态
+    int32 battery = 44; //设备电量
+    string romVersion = 45; //系统rom版本
+    string sdFreeSpace = 46; //磁盘剩余空间
+  }
+  User user = 8;
+  message User {
+    string userId = 2;   // 必传
+    int32 age = 3;       // 年龄
+    string yob = 4;      // 出生年份，例如：2002
+    string gender = 5;   // 性别，M：男，F：女
+    string keywords = 6; //
+  }
+  repeated Ext ext = 9; // 预留
+  message Ext {
+    string k = 1; // 必填，扩展字段
+    string v = 2; // 必填，扩展字段值
+  }
+  repeated string bcat = 10; // 预留
+  repeated string badv = 11; // 预留
+}
+
+message AdResponse {
+  string id = 1;           // 内部字段
+  int32 code = 2;          // 响应结果码
+  string respId = 3;       // 广告响应 ID，与 AdRequest.reqId 一致
+  uint32 processTime = 4;  // 处理时长，毫秒
+  repeated AdInfo ads = 5; // 广告素材信息，当有广告返回时，至少包含一个对象
+  message AdInfo {
+    string id = 1;         // 必填，广告 ID，由 2345 广告平台生成
+    string impNum = 2;     //
+    string impId = 3;      // 必填，对应广告请求中的 impId 字段
+    string slotId = 4;     // 必填，广告位 ID
+    string creativeId = 5; // 创意 ID
+    int32 templateId = 6;  // 广告样式 ID，与请求Template.id一致
+    int32 price = 7;       // 必填，出价，单位：分/CPM
+    Material material = 8; // 广告创意信息
+    message Material {
+      string title = 1;          // 推荐，广告标题
+      string description = 2;    // 推荐，广告描述
+      string btn = 3;            // 广告按钮文字
+      string brand = 4;          // 品牌描述
+      repeated Image images = 5; // 推荐，广告图片素材，图文或纯图时必填
+      Video video = 6;           // 推荐，广告视频素材，视频广告必填
+      message Video {
+        string url = 1;     // 必填，视频地址
+        int32 duration = 2; // 视频时长，单位：秒
+        int32 size = 3;     // 视频大小，单位：KB
+        Image cover = 4;    // 视频封面图片或视频后贴片图片
+        int32 protocol = 5; // 视频协议类型
+      }
+      Image icon= 7; // 广告 icon 图片
+    }
+    message Image {
+      string url = 1;   // 必填，图片地址
+      int32 width = 2;  // 图片宽度，单位：像素
+      int32 height = 3; // 图片高度，单位：像素
+    }
+    string landingPage = 9;    // 必填，落地页 URL
+    repeated string nurl = 10; // 必填，竞胜通知，当素材竞价成功时，媒体侧需要上报此监测链接
+    repeated string lurl = 11; // 竞败通知，当素材竞价失败时，媒体侧需要上报此监测链接
+    Tracking tracking = 12;    // 必填，广告监测地址
+    message Tracking {
+      repeated string impUrls = 1;               // 必填，曝光监测
+      repeated string clickUrls = 2;             // 必填，点击监测
+      repeated string videoStartUrls = 3;        // 视频开始播放时上报
+      repeated string videoFirstQUrls = 4;       // 视频播放 25% 时上报
+      repeated string videoMidUrls = 5;          // 视频播放 50% 时上报
+      repeated string videoThirdQUrls = 6;       // 视频播放 75% 时上报
+      repeated string videoFinUrls = 7;          // 视频播放完成时上报
+      repeated string downStartUrls = 8;         // 仅用于下载类广告，开始下载时上报
+      repeated string downFinUrls = 9;           // 仅用于下载类广告，下载完成时上报
+      repeated string downInstallStartUrls = 10; // 仅用于下载类广告，开始安装时上报
+      repeated string downInstallUrls = 11;      // 仅用于下载类广告，安装完成时上报
+      repeated string dpSuccessUrls = 12;        // 仅用于唤起类广告，唤醒成功时上报
+      repeated string dpFailedUrls = 13;         // 仅用于唤起类广告，唤醒失败时上报
+      repeated string miniSuccessUrls = 14;      // 仅用于小程序唤起类广告，唤醒成功时上报
+      repeated string miniFailedUrls = 15;       // 仅用于小程序唤起类广告，唤醒失败时上报
+    }
+    Action action = 13; // 广告点击后续信息
+    message Action {
+      int32 type = 1;  // 必填，点击广告后的交互类型，1：H5，2：下载，3：唤醒，4：微信小程序
+      AppInfo app = 2; // 下载类广告推荐填写
+      message AppInfo {
+        string name = 1;                      // 应用名称
+        string downloadUrl = 2;               // 应用下载地址，action.type=2 时该字段必有值
+        string packageName = 3;               // 应用包名
+        string version = 4;                   // 应用版本号
+        int32 size = 5;                       // 应用大小，单位 KB，下载类需要
+        Image logo = 6;                       // 应用 logo
+        string intro = 7;                     // 应用介绍
+        string developer = 8;                 // 应用开发者
+        string privacy = 9;                   // 应用隐私协议
+        string privacyUrl = 10;               // 应用隐私协议链接
+        repeated Permission permissions = 11; // 应用隐私权限列表
+        message Permission {
+          string title = 1; // 必填，隐私权限标题
+          string desc = 2;  // 必填，隐私权限详细描述
+        }
+        string permissionUrl = 12; // 应用隐私权限Url
+        string functionDesc = 13; // 产品功能介绍
+      }
+      string deeplink = 3;         // 应用内地址唤醒
+      MiniProgram miniProgram = 4; // 调起小程序
+      message MiniProgram {
+        string appId = 1;    // 移动应用的 ID
+        string username = 2; // 必填，所需跳转的小程序原始 ID（以"gh_"开头）
+        string path = 3;     // 推荐，所需跳转的小程序内页面路径及参数，不填默认拉起小程序主页
+        uint32 minitype = 4; // 必填，所需跳转的小程序类型，0：正式版，1：开发版，2：体验版
+      }
+      string universalLink = 5;         // iOS universal_link
+    }
+    Image sourceLogo = 14; // 广告来源标示图
+    string dealId = 15;    // PDB、PD 交易订单号
+    string seat = 16;      // 广告主 ID
+  }
+}

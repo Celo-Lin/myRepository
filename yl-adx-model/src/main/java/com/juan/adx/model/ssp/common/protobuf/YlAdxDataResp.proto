@@ -1,0 +1,16 @@
+// protoc --java_out=src/main/java  src/main/java/com/yl/adx/model/ssp/common/YlAdxData.proto
+
+syntax = "proto3";
+// TODO  定义包名, 自行根据需要更改
+package com.juan.adx.model.ssp.common.protobuf;
+
+//TODO  类名，自行更改
+option java_outer_classname = "YlAdxDataRespProtobuf";
+
+import "YuanLian.proto";
+
+message YlAdxDataResp {
+  uint32 code = 1;
+  string msg = 2;
+  AdReq ylAdxData = 3;
+}

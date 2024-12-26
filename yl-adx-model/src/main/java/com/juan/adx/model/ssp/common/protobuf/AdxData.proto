@@ -1,0 +1,241 @@
+syntax = "proto3";
+
+package com.yl.ad.protobuf;
+
+//TODO  类名，自行更改
+option java_outer_classname = "AdxDataProtobuf";
+
+service Domob {
+  rpc AdGet(AdReq) returns(AdResp);
+}
+
+// go-zero 限制在使用 goctl 生成 gRPC 代码时, 编写的所有 rpc 方法的请求体和响应体必须在主 proto 中声明 message, 即不支持从外包导入 message
+message AdReq {
+  string requestId = 1;       // 媒体自定义的请求 ID, 每次广告请求时生成的唯一 ID, 便于出现问题时提供此 ID 排查问题, 必填
+  Slot slot = 2;              // 广告位信息, 必填
+  Deal deal = 3;              // 交易数据对象
+  App app = 4;                // 应用消息, 必填
+  User user = 5;              // 用户信息
+  Device device = 6;          // 设备信息, 必填
+  DeviceId deviceId = 7;      // 设备 id 信息, 必填
+  repeated Caid caidList = 8; // caid 对象列表
+  Network network = 9;        // network 对象, 必填
+  Geo geo = 10;               // geo 对象
+  Ext ext = 11;               // 扩展对象
+}
+
+message Slot {
+  string adSlotId = 1;    // 平台分配的广告位 id, 必填
+  int32 type = 2;         // 广告类型 1-横幅广告 2-插屏广告 3-开屏广告 4-信息流广告 5-激励视频广告 6-Native 原生广告 7-贴片广告, 必填
+  int32 width = 3;        // 广告位宽带, 必填
+  int32 height = 4;       // 广告位高度, 必填
+  int32 materialType = 5; // 期望返回的广告物料类型 0-未知 1-纯文本广告 2-纯图片广告 3-图文广告 4-HTML 广告 5-视频广告 6-音频广告, 必填
+}
+
+message Deal {
+  int32 bidfloor = 1; // 出价明文, 单位: 分, 非实时竞价默认为 0, 必填
+}
+
+message App {
+  string name = 1;            // 媒体 APP 名称, 必填
+  string verName = 2;         // 媒体 App 版本, 句点分割的数字, 示例值: 3.1.5, 必填
+  string pkgName = 3;         // 媒体 APP 包名, 必填
+  string appStoreVersion = 4; // 应用商店版本号, 必填
+}
+
+message User {
+  int32 gender = 1;              // 用户性别 0-其他 1-男 2-女
+  int32 age = 2;                 // 用户的年龄 0：0-18 18：18-24 24：24-31 31：31-41 50：50+以上
+  repeated string interest = 3;  // 用户兴趣标签
+  repeated string installed = 4; // 用户已安装的应用列表
+}
+
+message Device {
+  int32 osType = 1;             // 系统类型 0-Unknown 1-IOS 2-Android 5-Windows 7-HarmonyOs, 必填
+  int32 type = 2;               // 设备类型 0-其他 1-手机 2-平板 3-OTT(包括互联网电视和电视机顶盒) 终端 4-PC, 必填
+  string osVersion = 3;         // 设备系统版本, 如: 6.0.2, 必填
+  string osUiVersion = 4;       // 系统 UI 版本号, 小米 MIUI 版本或者华为 UI 版本号等
+  int32 androidApiLevel = 5;    // Android API 版本
+  string language = 6;          // 设备系统语言, 必填
+  string timeZone = 7;          // 系统当前时间(IOS 必填), 必填
+  string sysCompilingTime = 8;  // 系统编译时间戳, 单位: 毫秒(IOS 必填), 必填
+  string sysUpdateTime = 9;     // 系统更新时间戳, 单位: 毫秒(IOS 必填), 必填
+  string sysStartupTime = 10;   // 系统启动时间戳, 单位: 毫秒(IOS 必填), 必填
+  string birthMark = 11;        // IOS 设备初始化标识
+  string bootMark = 12;         // 系统启动标识
+  string updateMark = 13;       // 系统更新标识
+  string romVersion = 14;       // 设备 ROM 版本
+  string deviceName = 15;       // 设备名称
+  string deviceNameMd5 = 16;    // 设备名称 md5 值
+  double sysMemorySize = 17;    // 设备内存大小, 单位: 字节(IOS 必填), 必填
+  double sysDiskSize = 18;      // 硬盘大小, 单位: 字节(IOS 必填), 必填
+  int32 cpuNum = 19;            // 设备 CPU 核数(IOS 必填), 必填
+  string model = 20;            // 设备型号, 必填
+  string hardwareModel = 21;    // IOS 硬件型号(IOS 必填)
+  string hmsVersion = 22;       // 华为 HMS Core 版本(华为手机必填)
+  string harmonyOsVersion = 23; // 鸿蒙系统内核版本
+  string hagVersion = 24;       // 华为 AppGallery 应用市场版本(华为手机必填)
+  int32 supportDeeplink = 25;   // 是否支持 deeplink 0-不支持 1-支持, 必填
+  int32 supportUniversal = 26;  // 媒体是否支持 universal link 0-不支持 1-支持, 必填
+  string make = 27;             // 设备厂商, 中文需要 UTF-8 编码, 必填
+  string brand = 28;            // 设备品牌, 必填
+  string imsi = 29;             // 国际移动用户识别码
+  int32 width = 30;             // 设备屏幕宽度, 必填
+  int32 height = 31;            // 设备屏幕高度, 必填
+  double density = 32;          // 设备屏幕物理像素密度, 必填
+  int32 dpi = 33;               // 设备屏幕像素点密度, 表示每英寸的点数, 必填
+  int32 ppi = 34;               // 设备屏幕像素密度, 表示每英寸的像素数
+  int32 orientation = 35;       // 屏幕的方向 0-unknown 1-竖屏 2-横批, 必填
+  string screenSize = 36;       // 屏幕尺寸, 单位: 英寸, 示例值: 4.7,5.5, 必填
+  string serialno = 37;         // 设备序列号
+}
+
+message DeviceId {
+  string imei = 1;          // Android 移动设备 imei 号(Android 能获取的情况下必填, 否则会严重影响变现效果), 必填
+  string imeiMd5 = 2;       // Android 移动设备 imei 号的 MD5 小写值(Android 能获取的情况下必填, 否则会严重影响变现效果), 必填
+  string oaid = 3;          // Android 移动设备 OAID(Android 能获取的情况下必填, 否则会严重影响变现效果), 必填
+  string oaidMd5 = 4;       // Android 移动设备 OAID MD5 小写值(Android 能获取的情况下必填, 否则会严重影响变现效果), 必填
+  string androidId = 5;     // Android 移动设备 android id(Android 能获取的情况下必填, 否则会严重影响变现效果), 必填
+  string androidIdMd5 = 6;  // Android 移动设备 android id MD5 小写值(Android 能获取的情况下必填, 否则会严重影响变现效果), 必填
+  string androidIdSha1 = 7; // Android 移动设备 android id Sha1 值(Android 能获取的情况下必填, 否则会严重影响变现效果), 必填
+  string idfa = 8;          // IOS 移动设备 idfa(IOS 能获取的情况下必填, 否则会严重影响变现效果), 必填
+  string idfaMd5 = 9;       // IOS 移动设备 idfa MD5 小写值(IOS 能获取的情况下必填, 否则会严重影响变现效果), 必填
+  string idfv = 10;         // IOS 移动设备 idfv 值(IOS 能获取的情况下必填, 否则会严重影响变现效果), 必填
+  string openUdid = 11;     // IOS 移动设备 OpenUDID(IOS 能获取的情况下必填, 否则会严重影响变现效果), 必填
+}
+
+message Caid {
+  string caid = 1;         // 中国广告协会互联网广告标识(IOS 能获取的情况下必填, 填写可提高填充), 必填
+  string version = 2;      // caid 版本号(IOS 能获取的情况下必填, 填写可提高填充), 必填
+  double generateTime = 3; // caid 生成时间(IOS 能获取的情况下必填), 必填
+  int32 vendor = 4;        // caid 供应商 0-热云 1-信通院 2-阿里因子 AAID(IOS 能获取的情况下必填), 必填
+}
+
+message Network {
+  string userAgent = 1;   // 设备浏览器内核的 User-Agent, 必填
+  string ip = 2;          // 用户设备所处公网真实 ipv4 地址, 禁止服务器 ip 和局域网 ip, 点分字符串形式, 与 ipv6 一起必须存在一个有效值(ip 请确保填写正确, 否则会严重影响变现效果)
+  string ipv6 = 3;        // 用户设备所处公网真实 ipv6 地址, 禁止服务器 ip 和局域网 ip, 与 ipv4 一起必须存在一个有效值
+  string mac = 4;         // 网卡 mac 地址, 必填
+  string macMd5 = 5;      // mac 地址 MD5 小写值, 必填
+  string macSha1 = 6;     // mac 地址 SHA1 小写值, 必填
+  string ssid = 7;        // wifi 热点 SSID 名称
+  string bssid = 8;       // wifi 热点 mac 地址
+  int32 carrier = 9;      // 运营商 0-未知 1-中国移动 2-中国电信 3-中国联通, 必填
+  int32 networkType = 10; // 客户端网络类型 0-unknown 1-wifi 2-2G 3-3G 4-4G 5-5G 10-以太网, 必填
+  string mcc = 11;        // 移动国家码
+  string mnc = 12;        // 移动网络码
+  string country = 13;    // 国家编码, 使用 ISO-3166-1 Alpha-3
+}
+
+message Geo {
+  int32 coordinateType = 1; // GPS 坐标类型 1-全球卫星定位系统坐标系 2-国家测绘局坐标系 3-百度坐标系 4-高德坐标系 5-腾讯坐标系 6-谷歌坐标系 100-其他
+  float latitude = 2;       // 纬度
+  float longitude = 3;      // 经度
+  int64 timestamp = 4;      // 获取坐标信息的时间戳, 单位: 毫秒
+}
+
+message Ext {
+  bool supportWechat = 1; // 是否支持微信小程序广告下发 true-支持 false-不支持, 必填
+  string paid = 2;        // 拼多多广告标识符(拼多多预算必填)
+}
+
+message AdResp {
+  int32 code = 1;          // 必填
+  string msg = 2;          // 必填
+  repeated AdInfo data= 3; // 必填
+}
+
+message AdInfo {
+  int32 requestId = 1;                // 媒体自定义的请求 ID, 每次广告请求时生成的唯一 ID, 便于出现问题时提供此 ID 排查问题, 必填
+  int32 adType = 2;                   // 广告类型 1-横幅广告 2-插屏广告 3-开屏广告 4-信息流广告 5-激励视频广告 6-Native 原生广告 7-贴片广告, 必填
+  int32 materialType = 3;             // 广告物料类型 0-未知 1-纯文字广告 2-纯图片广告 3-图文广告 4-HTML 广告 5-视频广告 6-音频广告
+  int32  interactionType = 4;         // 广告操作行为 0-无交互 1-应用内 WebView 打开落地页地址 2-使用系统浏览器打开落地页地址 3-Deeplink 唤醒 4-点击后下载, 仅出现在 Android 设备 5-打开微信小程序 6-广告通下载, 必填
+  string title = 5;                   // 广告标题文案, 短文案
+  string desc = 6;                    // 广告描述文案, 短文案
+  repeated string  adIcons = 7;       // 广告图标地址
+  int32 deeplinkType = 8;             // deeplink 类型 1-普通 scheme 2-IOS Universal link
+  string deeplink = 9;                // deeplink 地址
+  string landingPageUrl = 10;         // 用户点击后需要跳转到的落地页地址
+  string downloadUrl = 11;            // 应用下载地址
+  int32 bidPrice = 12;                // 本广告千次展示预估收益(竞价模式存在), 单位: 分
+  repeated string winNoticeUrl = 13;  // 竞胜上报链接(竞价模式存在), 由服务端上报
+  repeated string lossNoticeUrl = 14; // 竞败上报链接(竞价模式存在), 由服务端上报
+  RespApp app = 15;                   // 广告物料-应用信息
+  VideoInfo video = 16;               // 广告物料-视频信息
+  repeated ImageInfo images = 17;     // 广告物料-广告图片
+  MiniProgram miniProgram = 18;       // 微信小程序信息, 当 interactionType = 5 时有值
+  Trace trace = 19;                   // 广告效果检测信息, 必填
+}
+
+message RespApp {
+  string name = 1;              // 应用名称
+  string version = 2;           // 应用版本
+  string pkgName = 3;           // 应用包名
+  string pkgMd5 = 4;            // 应用包名 MD5 小写值
+  string iconUrl = 5;           // 应用 icon 地址
+  int64 size = 6;               // 应用大小
+  string corporate = 7;         // 应用开发者名称
+  string  privacyPolicyUrl = 8; // 应用隐私协议地址
+  string permissionUrl = 9;     // 应用权限地址
+}
+
+message VideoInfo {
+  string url = 1;          // 视频播放地址
+  string coverUrl = 2;     // 视频封面地址
+  int32 duration = 3;      // 视频总时长, 单位: 秒
+  int32 forceDuration = 4; // 视频强制播放时间, 单位: 秒, 一般在激励视频中会有, 代表播放到这个时间后才会激励成功
+  int32 size = 5;          // 视频大小, 单位字节(byte)
+  int32 width = 6;         // 视频宽度, 单位: px(视频广告通用)
+  int32 height = 7;        // 视频高度, 单位: px(视频广告通用)
+  int32 endUrlType = 8;    // 视频播放完成后需要展示的资源类型 0-无 1-需要展示的图片地址 2-需要展示的落地页地址 3-需要使用 webview 渲染的 HTML 代码
+  string endUrl = 9;       // 视频播放完成后, 需要加载的资源, 请根据 endUrlType 的值加载
+}
+
+message ImageInfo {
+  string url = 1;   // 图片地址
+  int32 width = 2;  // 图片宽
+  int32 height = 3; // 图片高
+}
+
+message MiniProgram {
+  string miniProgramId = 1;   // 微信小程序 ID
+  string miniProgramPath = 2; // 微信小程序唤起路径
+}
+
+message Trace {
+  repeated string showUrls = 1;                 // 广告被展示, 上报链接集合
+  repeated string clickUrls = 2;                // 广告被点击, 上报链接集合
+  repeated string adLoadUrls = 3;               // 广告加载, 上报链接集合
+  repeated string adSkipUrls = 4;               // 广告被跳过, 上报链接集合
+  repeated string adCloseUrls = 5;              // 广告被关闭, 上报链接集合
+  repeated string wechatOpenUrls = 6;           // 唤起微信小程序时, 上报链接集合
+  repeated string startDownloadUrls = 7;        // 应用下载开始, 上报链接集合(下载类广告需要上报)
+  repeated string finishDownloadUrls = 8;       // 应用下载完成, 上报链接集合(下载类广告需要上报)
+  repeated string startInstallUrls = 9;         // 应用安装开始, 上报链接集合(下载类广告需要上报)
+  repeated string finishInstallUrls = 10;       // 应用安装完成, 上报链接集合(下载类广告需要上报)
+  repeated string activeAppUrls = 11;           // 应用激活(打开), 上报链接集合
+  repeated string deeplinkTryUrls = 12;         // deeplink 尝试调起, 上报链接集合
+  repeated string deeplinkSuccessUrls = 13;     // deeplink 调起成功, 上报链接集合
+  repeated string deeplinkFailureUrls = 14;     // deeplink 调起失败, 上报链接集合
+  repeated string deeplinkClinkUrls = 15;       // deeplink 被点击前, 上报链接集合
+  repeated string deeplinkInstalledUrls = 16;   // deeplink 检测应用以安装, 上报链接集合
+  repeated string deeplinkUninstallUrls = 17;   // deeplink 检测应用为安装, 上报链接集合
+  repeated string videoStartUrls = 18;          // 视频播放开始, 上报链接集合
+  repeated string videoClickUrls = 19;          // 视频播放中点击, 上报链接集合
+  repeated string videoCompleteUrls = 20;       // 视频播放完成, 上报链接集合
+  repeated string videoFailUrls = 21;           // 视频播放失败, 上报链接集合
+  repeated string videoCloseUrls = 22;          // 视频关闭, 上报链接集合
+  repeated string videoSkipUrls = 23;           // 视频播放跳过, 上报链接集合
+  repeated string videoPauseUrls = 24;          // 视频播放暂停, 上报链接集合
+  repeated string videoResumeUrls = 25;         // 视频暂停再开始, 上报链接集合
+  repeated string videoReplayUrls = 26;         // 视频重播, 上报链接集合
+  repeated string videoMuteUrls = 27;           // 视频开启静音, 上报链接集合
+  repeated string videoUnmuteUrls = 28;         // 视频接触静音, 上报链接集合
+  repeated string videoFullscreenUrls = 29;     // 视频全屏播放, 上报链接集合
+  repeated string videoExitFullscreenUrls = 30; // 视频退出全屏播放, 上报链接集合
+  repeated string videoUpscrollUrls = 31;       // 视频上滑, 上报链接集合
+  repeated string videoDownscrollUrls = 32;     // 视频下滑, 上报链接集合
+  repeated string videoQuartileUrls = 33;       // 视频播放 25%, 上报链接集合
+  repeated string videoHalfUrls = 34;           // 视频播放 50%, 上报链接集合
+  repeated string videoThreeQuartileUrls = 35;  // 视频播放 75%, 上报链接集合
+}
